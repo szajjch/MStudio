@@ -1,0 +1,134 @@
+﻿@page "/"
+
+<PageTitle>M studio</PageTitle>
+
+<header class="fixed w-screen h-[4.5rem] z-50 text-white font-montserrat font-normal text-sm flex flex-row items-center justify-between transition-all hover:backdrop-blur-md" id="navbar">
+	<nav class="flex flex-row items-center w-auto">
+		<div id="mainbtn" class="ml-8 hover:cursor-pointer">Strona główna</div>
+		<div id="offerbtn" class="ml-8 hover:cursor-pointer">Oferta</div>
+		<div id="nav-booking-btn" class="ml-8 hover:cursor-pointer">Rezerwacja</div>
+	</nav>
+	<img src="./img/ms-w.png" class="w-14 mr-12" />
+</header>
+<main class="bg-hard-gray">
+	<section class="z-30 h-screen relative">
+		<video autoplay id="first-vid" src="./vid/vid2.mp4" type="video/mp4" class="object-cover w-screen h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+
+		<div class="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center">
+			<div class="mb-6 text-white text-center text-sm font-montserrat font-light uppercase tracking-wider">Wstęp</div>
+
+			<div class="text-white text-center text-4xl font-montserrat font-bold">Od 2012 roku jesteśmy renomowanym<br />salonem fryzjerskim.</div>
+			<div id="first-booking-btn" class="mt-8 flex items-center text-white text-base font-montserrat font-semibold py-2 px-6 backdrop-blur-lg rounded-3xl bg-neutral-300/10 transition-all hover:cursor-pointer hover:bg-neutral-500/10">
+				Rezerwacja wizyty
+				<svg class="fill-white rotate-90 ml-2 mt-[1px] hover:cursor-pointer" height="14" width="14" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M12.1,11.6L7,6.2l-5.1,5.3L0,9.8l7-7.3l7,7.3L12.1,11.6z"></path></svg>
+			</div>
+		</div>
+
+		<div class="absolute bottom-16 h-auto w-screen flex flex-col items-center animate-swipe">
+			<svg id="arrowdown" class="fill-white rotate-180 hover:cursor-pointer" height="15" width="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M12.1,11.6L7,6.2l-5.1,5.3L0,9.8l7-7.3l7,7.3L12.1,11.6z"></path></svg>
+		</div>
+	</section>
+	<section class="z-40 h-screen relative flex flex-col items-center justify-center">
+		<div class="mb-6 text-white text-center text-sm font-montserrat font-light uppercase tracking-wider">Nasza oferta</div>
+
+		<div class="w-screen h-auto">
+			<ul id="text-slider" class="flex list-none w-[800%] m-0 p-0 transition-all">
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Strzyżenie męskie</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Strzyżenie damskie</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Strzyżenie dziecięce</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Koloryzacja włosów</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Regenerująca terapia saunowa</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Wygładzanie keratynowe</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Zabiegi nawilżające i odżywcze</div>
+				</li>
+				<li class="w-[12.5%]">
+					<div class="text-white text-center text-8xl font-montserrat font-bold w-full">Stylizacja fryzury</div>
+				</li>
+			</ul>
+		</div>
+		<div id="second-booking-btn" class="mt-8 flex items-center text-white text-base font-montserrat font-semibold py-2 px-6 backdrop-blur-lg rounded-3xl bg-neutral-300/10 transition-all hover:cursor-pointer hover:bg-neutral-500/10">
+			Rezerwacja wizyty
+			<svg class="fill-white rotate-90 ml-2 mt-[1px] hover:cursor-pointer" height="14" width="14" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M12.1,11.6L7,6.2l-5.1,5.3L0,9.8l7-7.3l7,7.3L12.1,11.6z"></path></svg>
+		</div>
+
+		<div class="absolute bottom-16 grid grid-flow-col gap-3 items-center border-none rounded-xl p-0">
+			<div class="flex">
+				<input id="offer-1" type="radio" name="offer-control" aria-checked="true" readonly tabindex="-1" class="appearance-none w-0 h-0" value="1"/>
+				<label id="l-of-1" for="offer-1" class="w-14 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-2" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="2" />
+				<label id="l-of-2" for="offer-2" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-3" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="3" />
+				<label id="l-of-3" for="offer-3" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-4" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="4" />
+				<label id="l-of-4" for="offer-4" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-5" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="5" />
+				<label id="l-of-5" for="offer-5" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-6" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="6" />
+				<label id="l-of-6" for="offer-6" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-7" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="7" />
+				<label id="l-of-7" for="offer-7" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+			<div class="flex">
+				<input id="offer-8" type="radio" name="offer-control" aria-checked="false" readonly tabindex="-1" class="appearance-none w-0 h-0" value="8" />
+				<label id="l-of-8" for="offer-8" class="w-5 relative h-1 rounded bg-white border-none p-0 pointer-events-auto text-[0px] transition-all hover:cursor-pointer"></label>
+			</div>
+		</div>
+	</section>
+	<div class="w-screen h-screen fixed left-0 top-0 z-0">
+		<ul id="slider" class="flex list-none w-[800%] m-0 p-0 transition-all">
+			<li class="w-[12.5%]">
+				<video id="vid1" src="./vid/vid3.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid2" src="./vid/vid1.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid3" src="./vid/vid4.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid4" src="./vid/vid5.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid5" src="./vid/vid9.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid6" src="./vid/vid8.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid7" src="./vid/vid6.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+			<li class="w-[12.5%]">
+				<video id="vid8" src="./vid/vid7.mp4" type="video/mp4" class="object-cover w-full h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+			</li>
+		</ul>
+	</div>
+</main>
+
+
+
+

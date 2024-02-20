@@ -1,0 +1,113 @@
+﻿@rendermode InteractiveServer
+@page "/rezerwacja"
+
+<PageTitle>M studio - rezerwacja wizyty</PageTitle>
+
+<header class="fixed w-screen h-[4.5rem] z-50 text-white font-montserrat font-normal text-sm flex flex-row items-center justify-between bg-gradient-to-r from-black to-[#212121]" id="navbar">
+	<div @onclick="ReturnToHome" class="flex flex-row items-center ml-8 hover:cursor-pointer">
+		<svg class="fill-white mr-4 rotate-180 hover:cursor-pointer" height="14" width="14" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M14.8,7.5L9,13.4L7.6,12L11,8.6H0.2v-2H11L7.7,3L9,1.6L14.8,7.5z"></path></svg>
+		Strona główna
+	</div>
+
+
+	<img src="./img/ms-w.png" class="w-14 mr-12" />
+</header>
+<main class="bg-neutral-100">
+	<div class="w-screen h-screen flex flex-col items-center justify-center z-20">
+		<div class="h-2/3 w-[32rem] shadow-xl rounded-3xl flex flex-col transition-all items-center justify-between bg-white">
+				@if (pageNum == 0)
+				{
+					<div class="font-montserrat text-black text-center text-base font-light uppercase tracking-wider mt-8">Wybór rezerwacji</div>
+					<div class="flex flex-col items-center justify-center w-full h-auto">
+						<div @onclick=NextPage class="font-montserrat w-3/5 py-2 bg-black rounded-xl text-white text-center text-sm font-light transition-all mb-2 hover:cursor-pointer">Rezerwacja online</div>
+						<div @onclick=NextPage class="font-montserrat w-3/5 py-2 bg-black rounded-xl text-white text-center text-sm font-light transition-all mt-2 hover:cursor-pointer">Rezerwacja tradycyjna</div>
+					</div>
+					<div></div>
+				}
+				@if (pageNum == 1)
+				{
+					<div class="font-montserrat text-black text-center text-base font-light uppercase tracking-wider mt-8">Wybór usługi</div>
+					<div class="font-montserrat flex flex-col items-center w-full h-96 overflow-y-auto">
+						@foreach (var person in persons)
+						{
+							<div class="w-[88%] h-[192px] bg-neutral-50 rounded-xl mb-4 shrink-0 flex flex-col">
+								<div class="ml-4 mt-4 text-2xl font-bold text-neutral-400">@person.Name @person.Age</div>
+								<div class="ml-4 mt-2 flex flex-row flex-wrap">
+									<div @onclick='() => ToggleService(person, "sm")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sm") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Strzyżenie męskie</div>
+									<div @onclick='() => ToggleService(person, "sd")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sd") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Strzyżenie damskie</div>
+									<div @onclick='() => ToggleService(person, "sdz")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sdz") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Strzyżenie dziecięce</div>
+									<div @onclick='() => ToggleService(person, "kw")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("kw") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Koloryzacja włosów</div>
+									<div @onclick='() => ToggleService(person, "ts")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("ts") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Terapia saunowa</div>
+								<div @onclick='() => ToggleService(person, "bx")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("bx") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Botox na włosy</div>
+									<div @onclick='() => ToggleService(person, "wk")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("wk") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Wygładzanie keratynowe</div>
+									<div @onclick='() => ToggleService(person, "sf")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sf") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Stylizacja fryzury</div>
+								</div>
+							</div>
+						}
+
+						<div @onclick="AddPerson" class="text-sm px-6 py-2 text-white bg-black rounded-xl hover:cursor-pointer">Dodaj osobę</div>
+					</div>
+					<div class="font-montserrat text-black text-center text-xl font-light uppercase mb-8 hover:cursor-pointer">DALEJ</div>
+				}
+			</div>
+	</div>
+</main>
+
+
+
+@code {
+	@inject NavigationManager NavigationManager
+
+	private void ReturnToHome()
+	{
+		NavigationManager.NavigateTo("/", forceLoad: true);
+	}
+
+	private int pageNum { get; set; } = 0;
+
+	private void NextPage()
+	{
+		pageNum++;
+	}
+
+	private class Person
+	{
+		public string Name { get; set; }
+		public int Age { get; set; }
+		public List<string> SelectedOffers { get; set; } = new List<string>();
+	}
+
+	private List<Person> persons = new List<Person> {
+		new Person { Name = null, Age = 0 }	
+	};
+
+	private void AddPerson()
+	{
+		string name = "Daniel";
+		int age = 17;
+
+		Person addedPrs = new Person { Name = name, Age = age };
+
+		persons.Add(addedPrs);
+	}
+
+	private void ToggleService(Person person, string service)
+	{
+		if (person.SelectedOffers.Contains(service))
+		{
+			person.SelectedOffers.Remove(service);
+		}
+		else
+		{
+			if (service == "sm" || service == "sd" || service == "sdz")
+			{
+				person.SelectedOffers.RemoveAll(s => s == "sm" || s == "sd" || s == "sdz");
+
+				if (!person.SelectedOffers.Contains(service))
+					person.SelectedOffers.Add(service);
+			}
+			else
+				person.SelectedOffers.Add(service);
+		}
+	}
+}
