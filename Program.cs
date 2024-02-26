@@ -1,10 +1,13 @@
 using barber_website.Components;
+using barber_website.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddDbContext<ReservationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -21,7 +24,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();
