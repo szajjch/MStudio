@@ -1,5 +1,6 @@
 using barber_website.Components;
 using barber_website.Data;
+using barber_website.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,8 @@ var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddDbContext<ReservationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<Availability>();
 
 var app = builder.Build();
 
