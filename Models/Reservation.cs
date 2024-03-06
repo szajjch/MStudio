@@ -2,7 +2,7 @@
 {
     public class Reservation
     {
-		public int ReservationId { get; set; }
+		public string ReservationId { get; set; }
 		public string FirstName { get; set; }
 		public int Age { get; set; }
 		public string Email { get; set; }
