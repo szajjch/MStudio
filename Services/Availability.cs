@@ -17,6 +17,7 @@ namespace barber_website.Services
         public async Task<List<DateTime>> GetAvailableSlots()
         {
 			DateTime today = DateTime.Today;
+			today = today.ToUniversalTime();
 			DateTime weekLater = today.AddDays(7);
 
             // Pobierz zarezerwowane terminy 7 dni do przodu
@@ -34,7 +35,7 @@ namespace barber_website.Services
             {
                 var currentDate = today.AddDays(day);
 
-				var openingHour = openingHours.FirstOrDefault(sh => sh.dayOfWeek == currentDate.DayOfWeek);
+				var openingHour = openingHours.FirstOrDefault(sh => sh.dayOfWeek == currentDate.DayOfWeek.ToString());
 				if (openingHour == null || !openingHour.isOpen)
 					continue;
 
