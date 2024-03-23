@@ -11,6 +11,7 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddDbContext<ReservationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<Availability>();
+builder.Services.AddScoped<Book>();
 
 var app = builder.Build();
 
