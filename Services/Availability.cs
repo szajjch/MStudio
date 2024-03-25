@@ -39,24 +39,31 @@ namespace barber_website.Services
 				if (openingHour == null || !openingHour.isOpen)
 					continue;
 
-				var curTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, openingHour.openHour.Hours, openingHour.openHour.Minutes, 0);
-				var closeTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, openingHour.closeHour.Hours, openingHour.closeHour.Minutes, 0);
+				DateTime currentTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, openingHour.openHour.Hours, openingHour.openHour.Minutes, 0);
+				DateTime closeTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, openingHour.closeHour.Hours, openingHour.closeHour.Minutes, 0);
+				DateTime availableTime = currentTime;
 
+				// Dodaj sloty co 30 minut
+				while (availableTime  < closeTime)
+				{
+					availableSlots.Add(availableTime);
+					availableTime  = availableTime.AddMinutes(30);
+				}
+
+				// Usuń zajęte sloty
 				foreach (var reservation in reservations.Where(r => r.ReservationDateTime.Date == currentDate.Date))
 				{
 					var duration = reservation.Duration;
+					var reservationStart = reservation.ReservationDateTime;
 					var reservationEnd = reservation.ReservationDateTime.AddMinutes(duration);
 
-					while (curTime < reservationEnd) {
-						availableSlots.Remove(curTime);
-						curTime = curTime.AddMinutes(15);
+					while (currentTime < reservationEnd) {
+						if (currentTime >= reservationStart && currentTime < reservationEnd) 
+						{
+							availableSlots.Remove(currentTime);
+						}
+						currentTime  = currentTime.AddMinutes(30);
 					}
-				}
-
-				while (curTime < closeTime)
-				{
-					availableSlots.Add(curTime);
-					curTime = curTime.AddMinutes(15);
 				}
 			}
 
