@@ -14,12 +14,18 @@ namespace barber_website.Services
 			_reservationDbContext = reservationDbContext;
 		}
 
-		public async Task<bool> IsSlotAvailable(DateTime resDateTime, int duration)
+		public async Task<bool> IsReservationAvailable(DateTime resDateTime, int duration, string email)
 		{
 			resDateTime = resDateTime.ToUniversalTime();
 			var existingReservation = await _reservationDbContext.Reservations
 				.Where(r => r.ReservationDateTime <= resDateTime && r.ReservationDateTime.AddMinutes(duration) >= resDateTime)
 				.FirstOrDefaultAsync();
+
+			var reservationByEmail = await _reservationDbContext.Reservations
+				.FirstOrDefaultAsync(r => r.Email == email);
+
+			if (reservationByEmail != null)
+				return false;
 
 			return existingReservation == null;
 		}
