@@ -18,16 +18,12 @@ namespace barber_website.Services
 		{
 			resDateTime = resDateTime.ToUniversalTime();
 			var existingReservation = await _reservationDbContext.Reservations
-				.Where(r => r.ReservationDateTime <= resDateTime && r.ReservationDateTime.AddMinutes(duration) >= resDateTime)
-				.FirstOrDefaultAsync();
+				.AnyAsync(r => r.ReservationDateTime <= resDateTime && r.ReservationDateTime.AddMinutes(duration) >= resDateTime);
 
 			var reservationByEmail = await _reservationDbContext.Reservations
-				.FirstOrDefaultAsync(r => r.Email == email);
+				.AnyAsync(r => r.Email == email);
 
-			if (reservationByEmail != null)
-				return false;
-
-			return existingReservation == null;
+			return !existingReservation && !reservationByEmail;
 		}
 
 		public async Task BookHour(Reservation res)
