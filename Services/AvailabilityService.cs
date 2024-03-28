@@ -5,19 +5,18 @@ using Newtonsoft.Json;
 
 namespace barber_website.Services
 {
-    public class Availability
+    public class AvailabilityService : IAvailabilityService
     {
         private readonly ReservationDbContext _reservationDbContext;
 
-        public Availability(ReservationDbContext reservationDbContext)
+        public AvailabilityService(ReservationDbContext reservationDbContext)
         {
             _reservationDbContext = reservationDbContext;
         }
 
         public async Task<List<DateTime>> GetAvailableSlots()
         {
-			DateTime today = DateTime.Today;
-			today = today.ToUniversalTime();
+			DateTime today = DateTime.Now.ToUniversalTime();
 			DateTime weekLater = today.AddDays(7);
 
             // Pobierz zarezerwowane terminy 7 dni do przodu
