@@ -5,13 +5,15 @@ using System.Text;
 
 namespace barber_website.Services
 {
-	public class Book
+	public class BookingService : IBookingService
 	{
 		private readonly ReservationDbContext _reservationDbContext;
+		private readonly IMailService _mailService;
 
-		public Book(ReservationDbContext reservationDbContext)
+		public BookingService(ReservationDbContext reservationDbContext, IMailService mailService)
 		{
 			_reservationDbContext = reservationDbContext;
+			_mailService = mailService;
 		}
 
 		public async Task<bool> IsReservationAvailable(DateTime resDateTime, int duration, string email)
@@ -34,6 +36,57 @@ namespace barber_website.Services
 
 			_reservationDbContext.Add(res);
 			await _reservationDbContext.SaveChangesAsync();
+		}
+
+		public async Task StartVerification(string email)
+		{
+			var oldCode = await _reservationDbContext.ConfirmationCodes
+				.FirstOrDefaultAsync(c => c.Email == email);
+
+			DateTime createdAt = DateTime.UtcNow;
+			if (oldCode != null)
+			{
+				TimeSpan difference = createdAt - oldCode.CreatedAt.ToUniversalTime();
+
+				if (difference.TotalHours > 1)
+				{
+					_reservationDbContext.ConfirmationCodes.Remove(oldCode); // usun stary
+
+					string verCode = GenerateCode(6);
+
+					ConfirmationCode ver = new ConfirmationCode
+					{
+						Email = email,
+						Code = verCode,
+						CreatedAt = createdAt
+					};
+
+					_reservationDbContext.ConfirmationCodes.Add(ver); // dodaj nowy
+					await _reservationDbContext.SaveChangesAsync();
+
+					//await _mailService.SendVerificationCode(email, verCode);
+				}
+				else
+				{
+					//await _mailService.SendVerificationCode(email, oldCode.Code);
+				}
+			}
+			else
+			{
+				string verCode = GenerateCode(6);
+
+				ConfirmationCode ver = new ConfirmationCode
+				{
+					Email = email,
+					Code = verCode,
+					CreatedAt = createdAt
+				};
+
+				_reservationDbContext.ConfirmationCodes.Add(ver);
+				await _reservationDbContext.SaveChangesAsync();
+
+				//await _mailService.SendVerificationCode(email, verCode);
+			}
 		}
 
 		public string GenerateCode(int lenght)
