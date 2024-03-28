@@ -9,8 +9,15 @@ namespace barber_website.Data
         
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<OpeningHours> OpeningHours { get; set; }
+        public DbSet<ConfirmationCode> ConfirmationCodes {  get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OpeningHours>()
+                .HasKey(o => o.dayOfWeek);
 
-        // Dodać confirmation code
+			modelBuilder.Entity<ConfirmationCode>()
+	            .HasKey(o => o.Email);
+		}
     }
 }
