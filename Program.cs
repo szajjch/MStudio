@@ -10,8 +10,9 @@ var configuration = builder.Configuration;
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddDbContext<ReservationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<Availability>();
-builder.Services.AddScoped<Book>();
+builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
+builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 var app = builder.Build();
 
