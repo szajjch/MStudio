@@ -10,6 +10,7 @@ namespace barber_website.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<OpeningHours> OpeningHours { get; set; }
         public DbSet<ConfirmationCode> ConfirmationCodes {  get; set; }
+        public DbSet<Offer> Offers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
