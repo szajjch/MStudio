@@ -1,9 +1,14 @@
 ﻿@rendermode InteractiveServer
 @page "/rezerwacja"
 
+@using System.ComponentModel
+@using System.Text.RegularExpressions
+@using barber_website.Models
+@using barber_website.Services
+
 <PageTitle>M studio - rezerwacja wizyty</PageTitle>
 
-<header class="fixed w-screen h-[4.5rem] z-50 text-white font-montserrat font-normal text-sm flex flex-row items-center justify-between bg-gradient-to-r from-black to-[#212121]" id="navbar">
+<header class="relative w-screen h-[4.5rem] z-50 text-white font-montserrat font-normal text-sm flex flex-row items-center justify-between bg-gradient-to-r from-black to-[#212121]" id="navbar">
 	<div @onclick="ReturnToHome" class="flex flex-row items-center ml-8 hover:cursor-pointer">
 		<svg class="fill-white mr-4 rotate-180 hover:cursor-pointer" height="14" width="14" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M14.8,7.5L9,13.4L7.6,12L11,8.6H0.2v-2H11L7.7,3L9,1.6L14.8,7.5z"></path></svg>
 		Strona główna
@@ -12,112 +17,238 @@
 
 	<img src="./img/ms-w.png" class="w-14 mr-12" />
 </header>
-<main class="bg-neutral-100">
-	<div class="w-screen h-screen flex flex-col items-center justify-center z-20">
-		<div class="h-2/3 w-[32rem] shadow-xl rounded-3xl flex flex-col transition-all items-center justify-between bg-white">
-			@if (pageNum == 0)
-			{
-				<div class="font-montserrat text-black text-center text-base font-light uppercase tracking-wider mt-8">Wybór rezerwacji</div>
-				<div class="flex flex-col items-center justify-center w-full h-auto">
-					<div @onclick=NextPage class="font-montserrat w-3/5 py-2 bg-black rounded-xl text-white text-center text-sm font-light transition-all mb-2 hover:cursor-pointer">Rezerwacja online</div>
-					<div @onclick=NextPage class="font-montserrat w-3/5 py-2 bg-black rounded-xl text-white text-center text-sm font-light transition-all mt-2 hover:cursor-pointer">Rezerwacja tradycyjna</div>
+<main class="bg-white">
+	@if (resSite > 0)
+	{
+		@if(resSite == 1)
+		{
+			<div class="absolute left-0 top-0 w-full h-full flex flex-col justify-center items-center z-50 backdrop-blur-md">
+
+				<div class="text-black text-xl font-montserrat mb-4 uppercase tracking-wider">Wymagane informacje</div>
+
+				<input @bind="umail" type="text" placeholder="adres@mail.com" class="bg-neutral-100 rounded-3xl font-montserrat text-black px-4 py-2 outline-none w-1/5 mb-4" />
+				<input @bind="uphone" type="text" placeholder="+48 XXX XXX XXX" class="bg-neutral-100 rounded-3xl font-montserrat text-black px-4 py-2 outline-none w-1/5 mb-4" />
+				<button @onclick='ValidateCredentialsAndSubmit' class="font-montserrat text-white bg-neutral-950 px-4 py-2 rounded-3xl text-center w-1/5 transition-all hover:bg-neutral-900">Zatwierdź</button>
+
+			</div>
+		}
+		<div class="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center z-30 backdrop-blur-md">
+			<div class="h-3/4 w-2/5 bg-white shadow-xl rounded">
+				<div class="flex flex-col">
+					<div class="flex flex-row w-full flex-wrap justify-center mb-4 transition-all">
+						@foreach (var day in availableSlots.GroupBy(slot => slot.Date))
+						{
+							<button @onclick="() => ShowAvailableSlots(day.Key)" class="@($"font-montserrat transition-all text-xl py-2 px-4 rounded inline-flex items-center {(selectedDate == day.Key ? "bg-black text-white" : "bg-neutral-100 text-black")}")">
+								@day.Key.ToString("dd/MM")
+							</button>
+						}
+					</div>
+
+					<div class="flex flex-row w-full flex-wrap justify-center">
+						@if (selectedDate != null)
+						{
+							@foreach (var slot in availableSlots.Where(slot => slot.Date == selectedDate))
+							{
+								<button @onclick='() => slotSelected(slot)' class="font-montserrat rounded bg-neutral-100 text-black m-2">@slot.ToString("HH:mm")</button>
+							}
+						}
+					</div>
 				</div>
-				<div></div>
-			}
-			@if (pageNum == 1)
-			{
-				<div class="font-montserrat text-black text-center text-base font-light uppercase tracking-wider mt-8">Wybór usługi</div>
-				<div class="font-montserrat flex flex-col items-center w-full h-96 overflow-y-auto">
-					@foreach (var person in persons)
-					{
-						<div class="w-[88%] h-[192px] bg-neutral-50 rounded-xl mb-4 shrink-0 flex flex-col">
-							<div class="ml-4 mt-4 text-2xl font-bold text-neutral-400">@person.Name @person.Age</div>
-							<div class="ml-4 mt-2 flex flex-row flex-wrap">
-								<div @onclick='() => ToggleService(person, "sm")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sm") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Strzyżenie męskie</div>
-								<div @onclick='() => ToggleService(person, "sd")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sd") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Strzyżenie damskie</div>
-								<div @onclick='() => ToggleService(person, "sdz")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sdz") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Strzyżenie dziecięce</div>
-								<div @onclick='() => ToggleService(person, "kw")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("kw") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Koloryzacja włosów</div>
-								<div @onclick='() => ToggleService(person, "ts")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("ts") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Terapia saunowa</div>
-								<div @onclick='() => ToggleService(person, "bx")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("bx") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Botox na włosy</div>
-								<div @onclick='() => ToggleService(person, "wk")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("wk") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Wygładzanie keratynowe</div>
-								<div @onclick='() => ToggleService(person, "sf")' class="text-xs px-2 py-1 @(person.SelectedOffers.Contains("sf") ? "bg-black" : "bg-neutral-400") text-white rounded-lg mr-2 mt-2 hover:cursor-pointer">Stylizacja fryzury</div>
-							</div>
-						</div>
-					}
 
-					<div @onclick="AddPerson" class="text-sm px-6 py-2 text-white bg-black rounded-xl hover:cursor-pointer">Dodaj osobę</div>
+
+				<div @onclick='MakeReservation' class="font-montserrat text-black text-center text-xl font-light uppercase mb-8 hover:cursor-pointer">ZAREZERWUJ</div>
+
+			</div>
+		</div>
+	} 
+	<div class="w-screen h-screen flex flex-row items-center justify-between m-8 z-20">
+		<div class="w-3/5 h-screen flex flex-col items-center">
+			<div class="bg-neutral-50 w-full h-3/4">
+				<div class="font-montserrat text-3xl text-black font-normal border-b py-1 mb-4 w-1/3">Usługi</div>
+				<div class="w-full h-full">
+					<div class="flex flex-row flex-wrap w-full font-montserrat">
+						@if (offers != null)
+						{
+							@foreach (Offer offer in offers)
+							{
+								<div class="bg-white shadow rounded flex flex-row m-4 w-[28rem] h-auto justify-between">
+									<div class="flex flex-col m-2 justify-center">
+										<div class="font-semibold">@offer.Label</div>
+										<div class="text-sm text-stone-400">@offer.Description</div>
+									</div>
+									<div class="flex flex-row m-2 items-center">
+										<div class="mr-2 text-nowrap">@offer.Price zł</div>
+										<button @onclick='() => AddOffer(offer.Label, offer.Duration, offer.Price)' class="p-4 border w-12 h-12 rounded"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" /></svg></button>
+									</div>
+								</div>
+							}
+						}
+					</div>
 				</div>
-				<div class="font-montserrat text-black text-center text-xl font-light uppercase mb-8 hover:cursor-pointer">DALEJ</div>
-			}
-			@if (pageNum == 2)
-			{
-				<div class="font-montserrat text-black text-center text-base font-light uppercase tracking-wider mt-8">Wybór terminu</div>
+			</div>
+			<div class="bg-neutral-50 mt-4 w-full h-36">
+				<div class="w-full h-full ml-4 flex flex-row items-center justify-between">
+					<div class="font-montserrat flex flex-row w-1/2 flex-wrap items-center leading-6">
+						@if (SelectedOffers != null)
+						{
+							@foreach (var sofer in SelectedOffers)
+							{
+								@if (sofer.Value > 0)
+								{
+									<div class="mr-2">@sofer.Value x @sofer.Key </div>
+								}
+							}
+						}
+					</div>
+					<div class="font-montserrat flex flex-row items-center">
+						<div class="mr-4">@totalPrice zł</div>
+						<button @onclick="StartReservation" class="font-montserrat p-4 border rounded bg-white mr-8">Zarezerwuj</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="w-1/4 h-screen flex flex-col items-center mr-16">
+			<div class="w-full h-3/4">
+				<div class="font-montserrat text-3xl text-black font-normal border-b py-1 mb-4 w-1/3">Koszyk</div>
+				<div class="w-full h-full bg-neutral-50">
 
-				// Wybór pracownika
-
-				// Kalendarz terminowy
-
-				<div class="font-montserrat text-black text-center text-xl font-light uppercase mb-8 hover:cursor-pointer">ZAREZERWUJ</div>
-			}
+				</div>
+			
+			</div>
 		</div>
 	</div>
 </main>
 
 
-
 @code {
 	@inject NavigationManager NavigationManager
+	@inject IInitService init
+	@inject IAvailabilityService availability
+	@inject IBookingService book
+
+	List<Offer> offers = new List<Offer>();
+	List<DateTime> availableSlots = new List<DateTime>();
+
+	DateTime? selectedDate; DateTime selectedSlot;
+	private int pageNum { get; set; } = 0;
+	private string sname { get; set; }
+	private string uname { get; set; }
+	private string umail { get; set; }
+	private string uphone { get; set; }
+	private int sage { get; set; }
+
+
+	private int resSite = 0;
+
+	private int totalDuration { get; set; }
+	private decimal totalPrice { get; set; }
+
+	Dictionary<string, int> SelectedOffers = new Dictionary<string, int>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		offers = await init.GetOffers();
+
+		foreach (var offer in offers)
+		{
+			SelectedOffers.Add(offer.Label, 0);
+		}
+	}
+
+	void ShowAvailableSlots(DateTime date)
+	{
+		selectedDate = date;
+	}
+
+	private async Task slotSelected(DateTime slot)
+	{
+		selectedSlot = slot;
+	}
+
+	private async Task StartOnline()
+	{
+		pageNum++;
+		availableSlots = await availability.GetAvailableSlots();
+	}
+
+	private void NextPage(int number)
+	{
+		pageNum = number;
+	}
+
+	private async Task AddOffer(string service, int duration, decimal price)
+	{
+		if (SelectedOffers.ContainsKey(service) && totalDuration <= 120)
+		{
+			SelectedOffers[service]++;
+
+			totalDuration += duration;
+			totalPrice += price;
+		}
+	}
+
+	private void StartReservation()
+	{
+		resSite = 1;
+	}
+
+	private async Task MakeReservation()
+	{
+
+		if (await book.IsReservationAvailable(selectedSlot, totalDuration, umail))
+		{
+			Reservation newRes = new Reservation();
+			newRes.ReservationId = book.GenerateCode(5);
+			newRes.FirstName = uname;
+			newRes.Email = umail;
+			newRes.Phone = uphone;
+			newRes.Duration = totalDuration;
+			newRes.ReservationDateTime = selectedSlot.ToUniversalTime();
+			newRes.Services = Newtonsoft.Json.JsonConvert.SerializeObject(SelectedOffers);
+
+			await book.StartVerification(umail);
+
+			//await book.BookHour(newRes);
+			pageNum = 10;
+		}
+		else
+		{
+			// This slot is taken or email is taken
+		}
+	}
+
+	private async Task ValidateCredentialsAndSubmit()
+	{
+		if(IsValidEmail(umail) && IsValidPhoneNumber(uphone))
+		{
+			pageNum = 2;
+			availableSlots = await availability.GetAvailableSlots();
+		}
+		else
+		{
+			
+		}
+	}
+
+	private bool IsValidEmail(string email)
+	{
+		string[] allowedDomains = { "@gmail.com", "@outlook.com", "@yahoo.com", "@wp.pl", "@onet.pl", "interia.pl", "o2.pl", "poczta.onet.pl", "op.pl", "tlen.pl", "gazeta.pl" };
+
+		string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+		string domainPattern = $"^.*({string.Join("|", allowedDomains)})$";
+
+		return !string.IsNullOrWhiteSpace(email) && Regex.IsMatch(email, pattern) && Regex.IsMatch(email, domainPattern, RegexOptions.IgnoreCase);
+	}
+
+	private bool IsValidPhoneNumber(string phone)
+	{
+		string pattern = @"^(?:\+?48)? ?(?: ?\d){9}$";
+
+		return !string.IsNullOrWhiteSpace(phone) && phone.All(char.IsDigit) && phone.Length <= 12 && Regex.IsMatch(phone, pattern);
+	}
 
 	private void ReturnToHome()
 	{
 		NavigationManager.NavigateTo("/", forceLoad: true);
-	}
-
-	private int pageNum { get; set; } = 0;
-
-	private void NextPage()
-	{
-		pageNum++;
-	}
-
-	private class Person
-	{
-		public string Name { get; set; }
-		public int Age { get; set; }
-		public List<string> SelectedOffers { get; set; } = new List<string>();
-	}
-
-	private List<Person> persons = new List<Person> {
-		new Person { Name = null, Age = 0 }	
-	};
-
-	private void AddPerson()
-	{
-		string name = "Daniel";
-		int age = 17;
-
-		Person addedPrs = new Person { Name = name, Age = age };
-
-		persons.Add(addedPrs);
-	}
-
-	private void ToggleService(Person person, string service)
-	{
-		if (person.SelectedOffers.Contains(service))
-		{
-			person.SelectedOffers.Remove(service);
-		}
-		else
-		{
-			if (service == "sm" || service == "sd" || service == "sdz")
-			{
-				person.SelectedOffers.RemoveAll(s => s == "sm" || s == "sd" || s == "sdz");
-
-				if (!person.SelectedOffers.Contains(service))
-					person.SelectedOffers.Add(service);
-			}
-			else
-				person.SelectedOffers.Add(service);
-		}
 	}
 }
