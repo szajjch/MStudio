@@ -11,6 +11,7 @@ namespace barber_website.Data
         public DbSet<OpeningHours> OpeningHours { get; set; }
         public DbSet<ConfirmationCode> ConfirmationCodes {  get; set; }
         public DbSet<Offer> Offers { get; set; }
+        public DbSet<OtherDays> OtherDays { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,6 +20,9 @@ namespace barber_website.Data
 
 			modelBuilder.Entity<ConfirmationCode>()
 	            .HasKey(o => o.Email);
+
+            modelBuilder.Entity<OtherDays>()
+                .HasKey(o => o.date);
 		}
     }
 }
