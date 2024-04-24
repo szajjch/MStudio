@@ -18,7 +18,6 @@ namespace barber_website.Services
 
 			_keepAliveTimer = new Timer(async _ => await KeepSmtpConnectionAliveAsync(), null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
 		}
-		public SmtpClient Client => _client;
 
 		public async Task SendEmailAsync(string recipentEmail, string subject, string body)
 		{
