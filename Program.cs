@@ -14,15 +14,14 @@ builder.Services.AddDbContext<ReservationDbContext>(options => options.UseNpgsql
 
 builder.Services.AddScoped<IInitService, InitService>();
 
-builder.Services.AddSingleton<SmtpClient>(provider =>
+builder.Services.AddSingleton<SmtpService>(provider =>
 {
 	var smtpServer = configuration["EmailSettings:SmtpServer"];
 	var smtpPort = int.Parse(configuration["EmailSettings:SmtpPort"]);
 	var smtpUsername = configuration["EmailSettings:SmtpUsername"];
 	var smtpPassword = configuration["EmailSettings:SmtpPassword"];
 
-	var smtpService = new SmtpService(smtpServer, smtpPort, smtpUsername, smtpPassword);
-	return smtpService.Client;
+	return new SmtpService(smtpServer, smtpPort, smtpUsername, smtpPassword);
 });
 
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
