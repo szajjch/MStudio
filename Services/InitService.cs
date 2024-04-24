@@ -17,5 +17,10 @@ namespace barber_website.Services
 		{
 			return await _reservationDbContext.Offers.ToListAsync();
 		}
+
+		public async Task<List<OpeningHours>> GetCalendar()
+		{
+			return await _reservationDbContext.OpeningHours.ToListAsync();
+		}
 	}
 }
