@@ -1,6 +1,7 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace barber_website.Services
@@ -22,15 +23,29 @@ namespace barber_website.Services
 
 		public async Task SendSuccessCode(string recipientEmail, DateTime date, string services)
 		{
-			JArray servicesArray = JArray.Parse(services);
+			if (string.IsNullOrEmpty(services))
+			{
+				return;
+			}
+
+			JObject servicesObject;
+			try
+			{
+				servicesObject = JObject.Parse(services);
+			}
+			catch (JsonReaderException ex)
+			{
+				Console.WriteLine($"Błąd podczas parsowania danych JSON: {ex.Message}");
+				return;
+			}
+
 			string selectedServices = "";
 
-			foreach (var service in servicesArray)
+			foreach (var service in servicesObject.Properties())
 			{
-				foreach (var property in service.Children<JProperty>())
+				if (service.Value.Value<int>() > 0)
 				{
-					if (property.Value.Value<int>() > 0)
-						selectedServices += $"{property.Name}: {property.Value}\n";
+					selectedServices += $"{service.Name}: {service.Value}\n";
 				}
 			}
 
