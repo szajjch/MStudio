@@ -23,7 +23,7 @@ namespace barber_website.Services
 		public async Task SendEmailAsync(string recipentEmail, string subject, string body)
 		{
 			MimeMessage msg = new MimeMessage();
-			msg.From.Add(new MailboxAddress("MStudio", "mateckimichal82@gmail.com"));
+			msg.From.Add(new MailboxAddress("MStudio", "test@gmail.com"));
 			msg.To.Add(new MailboxAddress(null, recipentEmail));
 			msg.Subject = subject;
 
