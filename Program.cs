@@ -1,6 +1,8 @@
 using barber_website.Components;
 using barber_website.Data;
 using barber_website.Services;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,18 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddDbContext<ReservationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IInitService, InitService>();
+
+builder.Services.AddSingleton<SmtpClient>(provider =>
+{
+	var smtpServer = configuration["EmailSettings:SmtpServer"];
+	var smtpPort = int.Parse(configuration["EmailSettings:SmtpPort"]);
+	var smtpUsername = configuration["EmailSettings:SmtpUsername"];
+	var smtpPassword = configuration["EmailSettings:SmtpPassword"];
+
+	var smtpService = new SmtpService(smtpServer, smtpPort, smtpUsername, smtpPassword);
+	return smtpService.Client;
+});
+
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
 builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
