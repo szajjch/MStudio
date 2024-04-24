@@ -1,43 +1,47 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
+using Newtonsoft.Json.Linq;
 
 namespace barber_website.Services
 {
 
 	public class MailService : IMailService
 	{
-		private readonly IConfiguration _configuration;
-		public MailService(IConfiguration configuration) {
-			_configuration = configuration;
+		private readonly SmtpService _smtpService;
+
+		public MailService(SmtpService smtpService)
+		{
+			_smtpService = smtpService;
 		}
+
 		public async Task SendVerificationCode(string recipientEmail, string verificationCode)
 		{
-			var smtpServer = _configuration["EmailSettings:SmtpServer"];
-			var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"]);
-			var smtpUsername = _configuration["EmailSettings:SmtpUsername"];
-			var smtpPassword = _configuration["EmailSettings:SmtpPassword"];
+			await _smtpService.SendEmailAsync(recipientEmail, "Weryfikacja adresu e-mail", $"Twój kod weryfikacyjny to: {verificationCode}");
+		}
 
-			using (MimeMessage msg = new MimeMessage())
+		public async Task SendSuccessCode(string recipientEmail, DateTime date, string services)
+		{
+			JArray servicesArray = JArray.Parse(services);
+			string selectedServices = "";
+
+			foreach (var service in servicesArray)
 			{
-				msg.From.Add(new MailboxAddress("M Studio", "mail@gmail.com"));
-				msg.To.Add(new MailboxAddress(null, recipientEmail));
-				msg.Subject = "Weryfikacja adresu e-mail";
-
-				BodyBuilder bodyBuilder = new BodyBuilder();
-				bodyBuilder.TextBody = $"Twój kod weryfikacyjny to: {verificationCode}";
-
-				msg.Body = bodyBuilder.ToMessageBody();
-
-				using (SmtpClient client = new SmtpClient())
+				foreach (var property in service.Children<JProperty>())
 				{
-					await client.ConnectAsync(smtpServer, smtpPort, SecureSocketOptions.StartTls);
-					await client.AuthenticateAsync(smtpUsername, smtpPassword);
-
-					await client.SendAsync(msg);
-					await client.DisconnectAsync(true);
+					if (property.Value.Value<int>() > 0)
+						selectedServices += $"{property.Name}: {property.Value}\n";
 				}
 			}
+
+			string body = @$"
+				Cześć, informujemy o potwierdzeniu twojej rezerwacji.
+
+				{date}
+				{selectedServices}	
+			";
+
+			await _smtpService.SendEmailAsync(recipientEmail, "Potwierdzenie rezerwacji", body);
 		}
 	}
 }
