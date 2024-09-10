@@ -1,0 +1,11 @@
+﻿<section class="h-screen relative flex flex-col @($"z-{zIndex}")">
+	@ChildContent
+</section>
+
+@code {
+	[Parameter]
+	public string zIndex { get; set; } = "30";
+
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+}

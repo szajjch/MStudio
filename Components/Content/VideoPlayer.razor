@@ -1,0 +1,19 @@
+﻿<video 
+    autoplay
+    loop
+    muted
+    id="@VideoId" 
+    src="@Source" 
+    type="video/mp4" 
+    class="object-cover w-screen h-screen"
+    controlslist="nofullscreen nodownload" 
+    disablepictureinpicture 
+    disableremoteplayback 
+    playsinline 
+    preload="metadata">
+</video>
+
+@code {
+    [Parameter] public string Source { get; set; } = "";
+    [Parameter] public string VideoId { get; set; } = "video-player";
+}

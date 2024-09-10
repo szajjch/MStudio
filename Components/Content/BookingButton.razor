@@ -1,0 +1,11 @@
+﻿@inject NavigationManager Navigation;
+
+<button id="@ButtonId"
+        class="mt-6 w-fit flex items-center text-white text-base font-montserrat font-light py-2.5 px-8 backdrop-blur-lg rounded-3xl tracking-widest bg-neutral-300/10 transition-all hover:bg-neutral-500/10">
+        @ChildContent
+</button>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string ButtonId { get; set; } = "booking-btn";
+}
