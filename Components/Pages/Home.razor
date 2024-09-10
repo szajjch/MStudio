@@ -1,33 +1,32 @@
 ﻿@page "/"
 
+@using barber_website.Components.Content;
+
 <PageTitle>M studio</PageTitle>
 
-<header class="fixed w-screen h-[4.5rem] z-50 text-white font-montserrat font-normal text-sm flex flex-row items-center justify-between transition-all hover:backdrop-blur-md" id="navbar">
-	<nav class="flex flex-row items-center w-auto">
-		<div id="mainbtn" class="ml-8 hover:cursor-pointer">Strona główna</div>
-		<div id="offerbtn" class="ml-8 hover:cursor-pointer">Oferta</div>
-		<div id="nav-booking-btn" class="ml-8 hover:cursor-pointer">Rezerwacja</div>
-	</nav>
-	<img src="./img/ms-w.png" class="w-14 mr-12" />
-</header>
 <main class="bg-hard-gray">
-	<section class="z-30 h-screen relative">
-		<video autoplay id="first-vid" src="./vid/vid2.mp4" type="video/mp4" class="object-cover w-screen h-screen" controlslist="nofullscreen nodownload" disablepictureinpicture disableremoteplayback muted loop playsinline preload="metadata"></video>
+	<Contents/>
+	<Section>
+		<VideoPlayer Source="./vid/vid1_bw.mp4" VideoId="first-vid" />
 
-		<div class="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center">
+		<div class="absolute left-0 top-0 w-screen h-screen flex flex-col items-center justify-center lg:hidden">
 			<div class="mb-6 text-white text-center text-sm font-montserrat font-light uppercase tracking-wider">Wstęp</div>
+			<div class="text-white text-center text-2xl lg:text-3xl font-montserrat font-bold">Od 2012 roku jesteśmy renomowanym salonem fryzjerskim.</div>
+			<BookingButton>Rezerwacja wizyty</BookingButton>
+		</div>
 
-			<div class="text-white text-center text-3xl lg:text-4xl font-montserrat font-bold">Od 2012 roku jesteśmy renomowanym<br />salonem fryzjerskim.</div>
-			<button id="first-booking-btn" class="mt-8 flex items-center text-white text-base font-montserrat font-semibold py-2 px-6 backdrop-blur-lg rounded-3xl bg-neutral-300/10 transition-all hover:bg-neutral-500/10">
-				Rezerwacja wizyty
-				<svg class="fill-white rotate-90 ml-2 mt-[1px] hover:cursor-pointer" height="14" width="14" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M12.1,11.6L7,6.2l-5.1,5.3L0,9.8l7-7.3l7,7.3L12.1,11.6z"></path></svg>
-			</button>
+		<div class="absolute left-0 top-0 w-screen h-screen hidden lg:flex">
+			<div class="h-full w-1/3 flex flex-col justify-center ml-36">
+				<div class="mb-2 text-white text-left text-base font-montserrat font-light uppercase tracking-widest">Wstęp</div>
+				<div class="text-white text-left text-2xl lg:text-3xl font-montserrat font-bold">Od 2012 roku jesteśmy renomowanym salonem fryzjerskim.</div>
+				<BookingButton>Rezerwacja wizyty</BookingButton>
+			</div>
 		</div>
 
 		<div class="absolute bottom-16 h-auto w-screen flex flex-col items-center animate-swipe">
 			<svg id="arrowdown" class="fill-white rotate-180 hover:cursor-pointer" height="15" width="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M12.1,11.6L7,6.2l-5.1,5.3L0,9.8l7-7.3l7,7.3L12.1,11.6z"></path></svg>
 		</div>
-	</section>
+	</Section>
 	<section class="z-40 h-screen relative flex flex-col items-center justify-center">
 		<div class="mb-6 text-white text-center text-sm font-montserrat font-light uppercase tracking-wider">Nasza oferta</div>
 
@@ -59,10 +58,7 @@
 				</li>
 			</ul>
 		</div>
-		<button id="second-booking-btn" class="mt-8 flex items-center text-white text-base font-montserrat font-semibold py-2 px-6 backdrop-blur-lg rounded-3xl bg-neutral-300/10 transition-all hover:bg-neutral-500/10">
-			Rezerwacja wizyty
-			<svg class="fill-white rotate-90 ml-2 mt-[1px] hover:cursor-pointer" height="14" width="14" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" role="img" alt=""><path d="M12.1,11.6L7,6.2l-5.1,5.3L0,9.8l7-7.3l7,7.3L12.1,11.6z"></path></svg>
-		</button>
+		<BookingButton>Rezerwacja wizyty</BookingButton>
 
 		<div class="absolute bottom-16 grid grid-flow-col gap-3 items-center border-none rounded-xl p-0">
 			<div class="flex">
@@ -128,7 +124,3 @@
 		</ul>
 	</div>
 </main>
-
-
-
-
